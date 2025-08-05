@@ -12,7 +12,7 @@ REFERENCE="./gnomad_ref_allele.txt"
 $PLINK \
   --bfile $DATA \
   --extract $VARIANTS \
-  --ref-allele $REFERENCE \
+  --ref-allele $REFERENCE 1 2 \
   --make-bed \
   --threads ${OPTIONAL THREADS} \
   --out $OUTPUT
