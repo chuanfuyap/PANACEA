@@ -111,7 +111,7 @@ def chi_square_value(beta_hat, beta_cov):
 def meta_analyse_variants(dataframes):
     """
     Perform meta-analysis of multiple dataframes, each containing:
-      - A 'MarkerName' column (unique variant identifier).
+      - A 'VARIANT' column (unique variant identifier).
       - 4 slope columns: 'BETA', 'SNPxPC1_BETA', 'SNPxPC2_BETA', 'SNPxPC3_BETA'.
       - 16 CovMat_* columns: 'CovMat_0' ... 'CovMat_15', forming a 4x4 covariance.
 
@@ -125,13 +125,13 @@ def meta_analyse_variants(dataframes):
     -------
     meta_df : pd.DataFrame
         A DataFrame with meta-analysed results. For each variant:
-          - 'MarkerName'
+          - 'VARIANT'
           - 'meta_BETA', 'meta_SNPxPC1_BETA', 'meta_SNPxPC2_BETA', 'meta_SNPxPC3_BETA'
           - 'meta_CovMat_0' ... 'meta_CovMat_15'
           - 'chi_square'
     """
     # 1. Identify the set of variants present in ALL dataframes
-    marker_sets = [set(df['MarkerName']) for df in dataframes]
+    marker_sets = [set(df['VARIANT']) for df in dataframes]
     union_variants = set.union(*marker_sets)
 
     results = []
@@ -143,7 +143,7 @@ def meta_analyse_variants(dataframes):
         cov_matrices = []
 
         for df in dataframes:
-            rows = df.loc[df['MarkerName'] == variant]
+            rows = df.loc[df['VARIANT'] == variant]
             if len(rows) == 0:
                 continue  # this DataFrame does not have the variant, skip to the next one
             row = rows.iloc[0]
@@ -186,7 +186,7 @@ def meta_analyse_variants(dataframes):
 
         # Gather everything into a dictionary for appending to results
         results_dict = {
-            'MarkerName': variant,
+            'VARIANT': variant,
             'meta_BETA': meta_BETA,
             'meta_SNPxPC1_BETA': meta_SNPxPC1_BETA,
             'meta_SNPxPC2_BETA': meta_SNPxPC2_BETA,
