@@ -1,18 +1,25 @@
-# refPCA-GWAS
+# PANACEA (Pipeline for GWAS ANAlysis with a Continuous Exposition of Ancestry) 
 Scripts and necessary variant list to run GWAS without labelling samples based on ancestry or ethnicity. 
 
-Overall process:
+Overall pipeline process to process your data:
+0. NOTE before running the pipeline:
+    - this pipeline assumes your data is in **PLINK format (bed/bim/fam)**
+    - also assumes your variants are annotated in rsID format
+    - please make sure your data is **imputed** to have larger coverage of genome, as the reference panel variants are based on WGS data.
 1. run `extract_fix_ref.sh `(edit the contents to the right path)
-    - this extracts variants from a PLINK file and fixes the reference allele to match the HGDP+1kG reference panel (which I have been calling gnomad for convenience)
-    - the variants are all in rsID, so please annotate your PLINK file with rsID before running this script
+    - this extracts variants from a PLINK file and fixes the reference allele to match the HGDP+1kG reference panel (which I have been calling gnomad* for convenience)
+    - the variants are all annotated in rsID, so please **annotate your PLINK file with rsID** before running this script
+    - the reference panel used were based on **hg38 genome build**.
 2. run `pca_projection.sh` (edit the contents to the right path)
-    - this calls `project_gnomad.py`
-3. now you can run REGENIE with the additional 20 PCA components as covariates in both STEP 1 and STEP 2. 
+    - this calls `project_gnomad.py` python script for the execution that relies on [hail](https://hail.is)'
+    - this projects your individiual data onto the reference axes of genetic variation (AGV) defined by the reference panel, and outputs the first 50 reference AGV (labeled PC1 - PC50).
+3. now you can run [regenie](https://rgcgithub.github.io/regenie/) with the additional 20 reference AGV (PC1-20) as covariates in both STEP 1 and STEP 2. 
+    - please note the previous output gives 50 components, so please edit accordingly to include the first 20 components (PC1 - PC20) as covariates.
 
 OPTIONAL to run `REGINTEST`:
-- this test for interaction of a SNP with the first 3 PCA components, which tests for heterogeneity of effect across ancestry groups.
+- this is test for interaction of a SNV with the first 3 PCs, which tests for heterogeneity of effect across ancestry groups (correlation of SNV to genetic variation on the phenotype).
 - run `regintest.sh` (edit the contents to the right path)
-    - this calls `regintest.py`
+    - this calls `regintest.py` (requirements below)
 - and if needed run `multivar-meta.sh` to meta-analyse interaction results across multiple cohorts. 
     - usual meta-analysis qc applies on matching ID names, but please don't change the column names, they are hard coded to regintest.py output.
 
@@ -22,9 +29,11 @@ OPTIONAL to run `REGINTEST`:
 >
 > to make it easier for meta-analysis, it is recommended that during export step with PLINK to also include `--ref-allele` flag so effect allele would be the same across all studies, making it easier for meta-analysis. 
 
+*gnomad, reason calling it this its because the full reference panel was downloaded from [gnomAD](https://gnomad.broadinstitute.org/data#v3-hgdp-1kg)
+
 Requirements to run PCA projection:
 - PLINK (1 or 2 should work)
-- HAIL (necessary for PCA projection)
+- HAIL (necessary for PCA projection), this was tested on v0.2
 
 Requirements to run REGINTEST:
 - statsmodels=0.14.4
@@ -32,3 +41,10 @@ Requirements to run REGINTEST:
 - scipy=1.11.3"
 - numpy=1.26.1"
 - patsy=1.0.1
+
+I would recommend setting up a conda environment for this, e.g.:
+
+```bash
+conda create -n regintest_env python=3.9 hail=0.2 statsmodels=0.14.4 pandas=2.3.0 scipy=1.11.3 numpy=1.26.1 patsy=1.0.1
+conda activate regintest_env # activate the environment before running any of the scripts here
+```
