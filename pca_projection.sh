@@ -5,9 +5,9 @@
 set -e
 
 # EDIT THIS TO THE CORRESPONDING PATHS
-PLINK_PREFIX="$1"         # e.g. ukbb_genotype (without .bed/.bim/.fam)
-GNOMAD_LOADINGS_HT="$2"   # e.g. /path/to/gnomad_loadings.ht
-OUTPUT_PREFIX="$3"        # e.g. output/ukbb_pca
+PLINK_PREFIX="$1"         # e.g. PLINK genotype binary file (without .bed/.bim/.fam)
+GNOMAD_LOADINGS_HT="$2"   # e.g. /path/to/gnomad_loadings.ht (this is the folder included in the github repo)
+OUTPUT_PREFIX="$3"        # e.g. output/projected_agv_values 
 
 # Activate your hail/python environment if needed
 # source /path/to/your/env/bin/activate
