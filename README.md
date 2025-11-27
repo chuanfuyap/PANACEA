@@ -2,10 +2,12 @@
 Scripts and necessary variant list to run GWAS without labelling samples based on ancestry or ethnicity. 
 
 Overall pipeline process to process your data:
+
 0. NOTE before running the pipeline:
     - this pipeline assumes your data is in **PLINK format (bed/bim/fam)**
     - also assumes your variants are annotated in rsID format
     - please make sure your data is **imputed** to have larger coverage of genome, as the reference panel variants are based on WGS data.
+    - all the scripts here are to be executed in a Unix-like command-line environment (macOS and Linux).
 1. run `extract_fix_ref.sh `(edit the contents to the right path)
     - this extracts variants from a PLINK file and fixes the reference allele to match the HGDP+1kG reference panel (which I have been calling gnomad* for convenience)
     - the variants are all annotated in rsID, so please **annotate your PLINK file with rsID** before running this script
