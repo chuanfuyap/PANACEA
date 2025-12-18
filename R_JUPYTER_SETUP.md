@@ -109,18 +109,39 @@ R can be particularly useful for:
 
 ```R
 # Read REGINTEST results
+# The output contains columns: VARIANT, MAF, LOG10P, BETA, SE, and interaction terms
 results <- read.table("regintest_output.tsv", header=TRUE, sep="\t")
 
 # Basic summary
 summary(results)
 
-# Manhattan plot example
+# Simple visualization of p-values
 library(ggplot2)
-ggplot(results, aes(x=BP, y=-log10(P), color=CHR)) +
-  geom_point() +
+
+# Plot distribution of -log10(P) values
+ggplot(results, aes(x=seq_along(LOG10P), y=LOG10P)) +
+  geom_point(alpha=0.5) +
   theme_minimal() +
-  labs(title="REGINTEST Results", x="Position", y="-log10(P)")
+  labs(title="REGINTEST Results", 
+       x="Variant Index", 
+       y="-log10(P)")
+
+# Plot MAF vs effect size
+ggplot(results, aes(x=MAF, y=BETA)) +
+  geom_point(alpha=0.5) +
+  theme_minimal() +
+  labs(title="MAF vs Effect Size", 
+       x="Minor Allele Frequency", 
+       y="Beta Coefficient")
 ```
+
+**Note:** REGINTEST output columns include:
+- `VARIANT`: Variant identifier
+- `MAF`: Minor allele frequency
+- `LOG10P`: -log10 of p-value for main effect
+- `BETA`: Beta coefficient
+- `SE`: Standard error
+- Interaction terms: `SNPxPC1_LOG10P`, `SNPxPC2_LOG10P`, `SNPxPC3_LOG10P`, etc.
 
 ## Troubleshooting
 
@@ -168,8 +189,20 @@ You can use R notebooks alongside the Python-based PANACEA pipeline:
 
 Example combined workflow:
 ```bash
-# Activate environment with both Python and R
-conda create -n panacea_full python=3.9 hail=0.2 statsmodels=0.14.4 pandas=2.3.0 scipy=1.11.3 numpy=1.26.1 patsy=1.0.1 jupyter r-base r-irkernel
+# Create environment with both Python and R
+conda create -n panacea_full \
+    python=3.9 \
+    hail=0.2 \
+    statsmodels=0.14.4 \
+    pandas=2.3.0 \
+    scipy=1.11.3 \
+    numpy=1.26.1 \
+    patsy=1.0.1 \
+    jupyter \
+    r-base \
+    r-irkernel
+
+# Activate the environment
 conda activate panacea_full
 
 # Run Python-based analysis
