@@ -50,3 +50,13 @@ I would recommend setting up a conda environment for this, e.g.:
 conda create -n regintest_env python=3.9 hail=0.2 statsmodels=0.14.4 pandas=2.3.0 scipy=1.11.3 numpy=1.26.1 patsy=1.0.1
 conda activate regintest_env # activate the environment before running any of the scripts here
 ```
+
+## Using R with Jupyter Notebooks
+
+For visualization and downstream analysis of PANACEA results using R in Jupyter notebooks, see the detailed setup guide: [R_JUPYTER_SETUP.md](R_JUPYTER_SETUP.md)
+
+This guide covers:
+- Installing R kernel (IRkernel) for Jupyter
+- Setting up a combined Python + R environment
+- Using R for visualization of GWAS and REGINTEST results
+- Troubleshooting common issues
